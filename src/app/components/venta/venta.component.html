@@ -1,0 +1,115 @@
+<div class="card" id="htmlData">
+    <p-table #dt [value]="reporteVentas" scrollHeight="580px" [tableStyle]="{'min-width': '50rem'}" [rows]="10" [scrollable]="true" [globalFilterFields]="[
+            'nombrecliente',
+            'reporteVentas.nombrecliente',
+            'nombrecliente',
+            'reporteVentas.apellidocliente',
+            'dnicliente',
+            'reporteVentas.dnicliente',
+            'fechaVenta',
+            'reporteVentas.fechaVenta'
+        ]" [rowHover]="true" dataKey="id">
+        <ng-template pTemplate="header">
+            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                <h5 class="m-0">Reporte de Ventas</h5>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="caption">
+            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                <h5 class="m-0" style="text-align: center; color: white;" >
+                    REPORTE DE VENTAS
+                </h5>
+                <span class="block mt-2 md:mt-0 p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."
+                        class="w-full sm:w-auto" />
+                </span>
+            </div>
+            <hr class="mb-3 mx-3 border-top-1 border-none surface-border" />
+            <div 
+                class="flex flex-column md:flex-row ">
+                <div >
+                    <label for="fechaInicio">Fecha Inicio:</label>
+                    <p-calendar #fechaInicioCalendar [(ngModel)]="fechaInicio" [readonlyInput]="true" id="fechaInicio"
+                        class="mr-2"></p-calendar>
+                </div>
+                <div >
+                    <label for="fechaFin">Fecha Fin:</label>
+                    <p-calendar #fechaFinCalendar [(ngModel)]="fechaFin" [readonlyInput]="true" id="fechaFin" class="mr-2"></p-calendar>
+                </div>
+                <button pButton pTooltip="Filtrar por fecha" label="Filtrar" (click)="listarVentas()" [disabled]="!fechaInicio || !fechaFin" style="margin-bottom: 10px; margin-right: 10px;"></button>
+
+                <p-button #resetButton pTooltip="Restablecer" icon="pi pi-sync" [rounded]="true" *ngIf="mostrarResetButton" (click)="reiniciarFechas()"></p-button>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr #headerRow>
+                <th pSortableColumn="idventa" style="width: 8%">
+                    N° Venta
+                </th>
+                <th pSortableColumn="nombrecliente" style="width: 15%">
+                    Cliente
+                </th>
+                <th pSortableColumn="dnicliente" style="width: 6%">
+                    DNI
+                </th>
+                <th pSortableColumn="tipoComprobante" style="width: 10%">
+                    Tipo Comprobante
+
+                </th>
+                <th pSortableColumn="tipoEntrega" style="width: 10%">
+                    Tipo Entrega
+                </th>
+                <th pSortableColumn="producto" style="width: 8%">
+                    Producto
+                </th>
+                <th pSortableColumn="cantidad" style="width: 6%">
+                    Cantidad
+                </th>
+                <th pSortableColumn="precioUnitario" style="width: 10%">
+                    Precio Unitario
+
+                </th>
+                <th pSortableColumn="precioTotal" style="width: 8%">
+                    Precio Total
+                </th>
+                <th pSortableColumn="fechaVenta" style="width: 15%">
+                    Fecha Venta
+                </th>
+                
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-reporteVentas>
+            <tr #Row>
+                <td>{{ reporteVentas.idventa }}</td>
+                <td>
+                    {{ reporteVentas.nombrecliente }}
+                    {{ reporteVentas.apellidocliente }}
+                </td>
+                <td>{{ reporteVentas.dnicliente }}</td>
+                <td>{{ reporteVentas.tipoComprobate }}</td>
+                <td>{{ reporteVentas.tipoEntrega }}</td>
+                <td>{{ reporteVentas.producto }}</td>
+                <td>{{ reporteVentas.cantidad }}</td>
+                <td>S/. {{ reporteVentas.precioUnitario }}</td>
+                <td>S/. {{ reporteVentas.preciototal }}</td>
+                <td>
+                    {{ reporteVentas.fechaVenta}}
+                </td>
+                     
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <tr>
+                <td colspan="9" class="text-right"> 
+                    <button type="button" pButton pRipple (click)="exportExcel()" class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom">Descargar Reporte <i class="pi pi-file-excel" style="padding: 5px;"></i> </button><!-- Usa el colspan según la cantidad de columnas en tu tabla -->
+                    <button type="button" pButton pRipple (click)="exportPdf()" class="p-button-danger mr-2"
+                        pTooltip="PDF" tooltipPosition="bottom">Descagar Reporte<i class="pi pi-file-pdf"
+                            style="padding: 5px;"></i></button>
+                            
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

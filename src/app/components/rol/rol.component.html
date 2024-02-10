@@ -1,0 +1,112 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Agregar categoria" icon="pi pi-plus" class="p-button-info mr-2" (click)="openRegister()"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="rol" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['nombre','categoria.nombre']"  [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">MANTENIMIENTO DE ROLES</h5>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="idcategoria">ID <p-sortIcon field="idcategoria"></p-sortIcon></th>
+                        <th pSortableColumn="nombre">Nombre<p-sortIcon field="nombre"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rol>
+                    <tr>
+                        <td style="width:10%; min-width:30rem;"><span class="p-column-title">ID</span>
+                            {{rol.idrol}}
+                        </td>
+                        <td style="width:14%; min-width:60rem;">
+                            <span class="p-column-title">Nombre</span>
+                            {{rol.nombrerol}}
+                        </td>
+                        <td >
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-info mr-2" (click)="loadUser(rol.idrol)" (click)="openUpdate()"></button>
+                                <button id="botonEliminar" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="onDelete(rol.idrol)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+<p-dialog [(visible)]="registerDialog" header="AGREGAR NUEVO ROL" [style]="{ width: '600px',  'margin-left': '-25%2' }" [modal]="true" (onHide)="onCloseDialog()"
+    class="p-fluid" style="
+        background: linear-gradient(
+            180deg,
+            var(--primary-color) 10%,
+            rgba(33, 150, 243, 0) 30%
+        );
+    ">
+    <div style="border-radius: 80px; padding: 0.3rem">
+        <div class="w-full surface-card py-8 px-5 sm:px-8">
+            <form [formGroup]="rolForm">
+                <div> 
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Nombre</label>
+                            <input id="rolNombre" formControlName="rolNombre" type="text" required pInputText />
+                            <small class="p-error" *ngIf="rolForm.get('rolNombre').hasError('required') &&rolForm.get('rolNombre').touched">
+                                Ingrese nombre rol.</small>
+                        </div>  
+                </div>
+            </form>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="field">
+            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="onClose()"></button>
+            <button pButton pRipple label="Guardar" icon="pi pi-save" (click)="crear()"></button>
+        </div>
+    </ng-template>
+    
+    
+</p-dialog>
+<p-dialog [(visible)]="updateDialog" header="ACTUALIZAR INFORMACIÓN DEL ROL" [style]="{ width: '600px',  'margin-left': '-25%2' }" [modal]="true" (onHide)="onCloseDialog()"
+    class="p-fluid" style="
+        background: linear-gradient(
+            180deg,
+            var(--primary-color) 10%,
+            rgba(33, 150, 243, 0) 30%
+        );
+    ">
+    <div style="border-radius: 80px; padding: 0.3rem">
+        <div class="w-full surface-card py-8 px-5 sm:px-8">
+            <form [formGroup]="rolForm">
+                <div>
+                    <div class="field" style="width: 350px;" hidden>
+                        <label for="firstname">rolid</label>
+                        <input id="rolId" formControlName="rolId" type="text" pInputText/>
+                    </div>
+                    <div class="field" style="width: 350px;">
+                        <label for="firstname">Nombre</label>
+                        <input id="rolNombre" formControlName="rolNombre" type="text" required pInputText />
+                        <small class="p-error" *ngIf="rolForm.get('rolNombre').hasError('required') &&rolForm.get('rolNombre').touched">
+                            Ingrese nombre rol.</small>
+                    </div>  
+                </div>
+            </form>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="field">
+            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="onClose()"></button>
+            <button pButton pRipple label="Guardar" icon="pi pi-save" (click)="actualizar()"></button>
+        </div>
+    </ng-template>
+    
+    
+</p-dialog>

@@ -1,0 +1,257 @@
+<div class="card">
+    <div class="grid p-fluid">
+        <div class="col-14 md:col-8">
+            <div class="card">
+                <h5>Información Personal</h5>
+                <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                    <label for="firstname">Nombre:</label>
+                    <input type="text" pInputText placeholder="Nombre" value="{{clienteNombre}}" readonly>
+                </div>
+                <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                    <label for="firstname">Apellido:</label>
+                    <input type="text" pInputText placeholder="Apellidos" value="{{clienteApellido}}" readonly>
+                </div>
+                <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                    <label for="firstname">DNI: <span style="color: white;">.........</span></label>
+                    <input type="text" pInputText placeholder="DNI" value="{{clienteDni}}" readonly>
+                </div>
+                <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                    <label for="firstname">Teléfono:</label>
+                    <input type="text" pInputText placeholder="Telefono" value="{{clienteTelefono}}" readonly>
+                </div>
+                <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                    <label for="firstname">Correo:<span style="color: white;">...</span></label>
+                    <input type="text" pInputText placeholder="Correo Electrónico" value="{{clienteCorreo}}" readonly>
+                </div>
+                <h5>Tipo de entrega</h5>
+                <p-dropdown [(ngModel)]="tipoEntrega" [options]="tiposEntrega" optionLabel="label"
+                    placeholder="Selecciona tipo de entrega"></p-dropdown>
+
+                <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                </div>
+                <form [formGroup]="envioForm">
+                    <div *ngIf="tipoEntrega && tipoEntrega.value === 'Envio'">
+                        <div class="grid formgrid">
+                            <div class="col-12 mb-2 lg:col-4 lg:mb-0">
+                                <label for="departamento">Departamento:</label>
+                                <p-dropdown [options]="departamentos" [(ngModel)]="selectedDepartamento" placeholder="Selecciona el departamento"
+                                (onChange)="onDepartamentoChange()" optionLabel="label" formControlName="region">
+                                ></p-dropdown>
+                                <small class="p-error" *ngIf="envioForm.get('region').hasError('required') &&envioForm.get('region').touched">
+                                    Este campo es requerido.</small>
+                            </div>
+                            <div class="col-12 mb-2 lg:col-4 lg:mb-0">
+                                <label for="provincia">Provincia:</label>
+                                <p-dropdown [options]="provincias" [(ngModel)]="selectedProvincia" placeholder="Selecciona la provincia"
+                                (onChange)="onProvinciaChange()" optionLabel="label" formControlName="provincia">
+                                ></p-dropdown>
+                                <small class="p-error" *ngIf="envioForm.get('provincia').hasError('required') &&envioForm.get('provincia').touched">
+                                    Este campo es requerido.</small>
+                            </div>
+                            <div class="col-12 mb-2 lg:col-4 lg:mb-0">
+                                <label for="provincia">Distrito:</label>
+                                <p-dropdown [options]="distritos" [(ngModel)]="selectedDistrito" placeholder="Selecciona el distrito"
+                                optionLabel="label" formControlName="distrito"></p-dropdown>
+                                <small class="p-error" *ngIf="envioForm.get('distrito').hasError('required') &&envioForm.get('distrito').touched">
+                                    Este campo es requerido.</small>
+                            </div>
+                        </div>
+                        <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        </div>
+                        <input type="text" formControlName="direccionenvio" pInputText placeholder="Nombre de la calle o número de la casa" />
+                        <small class="p-error" *ngIf="envioForm.get('direccionenvio').hasError('required') &&envioForm.get('direccionenvio').touched">
+                            Este campo es requerido.</small>
+                    </div>
+                </form>
+
+                <div *ngIf="tipoEntrega && tipoEntrega.value === 'Recoger en tienda'">
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                    </div>
+                    <input type="text" pInputText placeholder="Av. Las Palmeras 550" readonly />
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-10 md:col-4">
+            <div class="card">
+                <header class="font-bold text-1xl">Productos
+                </header>
+                <hr class="mb-3 mx-3 border-top-1 border-none surface-border" />
+                <div *ngFor="let productosEnCarrito of productosEnCarrito">
+                    <div class="flex flex-wrap p-2 align-items-center gap-3">
+                        <div class="flex-1 flex flex-column gap-2">
+                            <span class="font-bold">{{ productosEnCarrito.nombre }}</span>
+                            <div class="flex align-items-center gap-2">
+                                <span>Categoria: {{productosEnCarrito.categoria }}</span>
+                            </div>
+                            <span>Precio Unitario: {{ 'S/. ' + productosEnCarrito.precio+ '.00' }}</span>
+                            <span>Cantidad: {{productosEnCarrito.cantidad}}</span>
+                        </div>
+                        <img [src]="productosEnCarrito.imagen" [alt]="productosEnCarrito.imagen"
+                            class="w-4rem shadow-2 flex-shrink-0 border-round" />
+                    </div>
+                    <hr class="mb-3 mx-3 border-top-1 border-none surface-border" />
+                </div>
+                <div class="flex-1 flex flex-column gap-2">
+                    <div style="text-align: end;">
+                        <span class="font-bold">Total: {{ 'S/. '+obtenerPrecioTotalCarrito() + '.00'}}</span>
+                    </div>
+                </div>
+
+            </div>
+            <hr class="mb-3 mx-3 border-top-1 border-none surface-border" />
+            <div style="justify-content: center; align-items: center;">
+                <label for="firstname" class="font-bold text-1xl">Pagar con:</label>
+                <hr class="mb-3 mx-3 border-top-1 border-none surface-border" />
+                <ngx-paypal *ngIf="pagado ==false" [config]="payPalConfig" [disabled]="botonDesactivado"></ngx-paypal>
+                <button *ngIf="pagado == true" pButton label="Descargar Comprobante" (click)="downloadPDF()"></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="ticket" id="htmlData" style="visibility: hidden;">
+        <div class="header">
+            <h2>DANNY</h2>
+        </div>
+        <p>RUC: 18211252199</p>
+        <span>----------------------------------------------</span>
+        <div class="details">
+            <p>Cliente: {{clienteNombre}} {{clienteApellido}}</p>
+            <p>Fecha de Compra: {{fechaActual}}</p>
+            <p >Tipo de Entrega: {{ tipoEntrega?.value }}</p>
+        </div>
+        <span>----------------------------------------------</span>
+        <div class="items">
+            <div class="item">
+                <span>Producto</span>
+                <span>Cantidad</span>
+                <span>Precio</span>
+            </div>
+        </div>
+        <span>----------------------------------------------</span>
+        <div class="items">
+            <div class="item" *ngFor="let item of productosEnCarrito">
+                <span>{{item.nombre}}</span>
+                <span>{{item.cantidad}}</span>
+                <span>S/. {{item.precio+ '.00'}}</span>
+            </div>
+        </div>
+        <span>----------------------------------------------</span>
+        <div class="total">
+            <p>Total: {{ 'S/. '+obtenerPrecioTotalCarrito() + '.00'}}</p>
+        </div>
+    </div>
+
+
+    <style>
+        .ticket {
+            width: 300px;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 10px;
+        }
+
+        .details {
+            margin-bottom: 10px;
+        }
+
+        .items {
+
+            margin-top: 10px;
+        }
+
+        .item {
+            padding: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .total {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        #info {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        #items {
+            margin-top: 20px;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .item span {
+            flex: 1;
+        }
+
+        #total {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        #footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .comprobante {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            max-width: 100px;
+            margin-bottom: 10px;
+        }
+
+        .info-cliente {
+            margin-bottom: 20px;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .items-table th,
+        .items-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .total {
+            margin-top: 20px;
+            text-align: right;
+        }
+    </style>

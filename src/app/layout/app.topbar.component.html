@@ -1,0 +1,355 @@
+<p-confirmDialog key="positionDialog" [position]="position"
+    rejectButtonStyleClass="p-button-outlined"></p-confirmDialog>
+<p-toast [position]="'center'" [baseZIndex]="10000"></p-toast>
+<!-- Menu top bar-->
+
+<body>
+
+
+    <div class="layout-topbar" style="
+        backdrop-filter: blur(
+            10px
+        ); /* Puedes ajustar el valor según la intensidad de desenfoque deseada */
+        background-color: rgba(255, 255, 255, 0.5);
+    ">
+        <a class="layout-topbar-logo" routerLink="">
+            <img src="assets/layout/images/logo_1_bg.png" alt="logo">
+            <span>DANNY</span>
+        </a>
+
+        <button #menubutton class="p-link layout-menu-button layout-topbar-button"
+            (click)="layoutService.onMenuToggle()">
+            <i class="pi pi-bars"></i>
+        </button>
+
+        <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button"
+            (click)="layoutService.showProfileSidebar()">
+            <i class="pi pi-ellipsis-v"></i>
+        </button>
+
+        <div #topbarmenu class="layout-topbar-menu" [ngClass]="{
+            'layout-topbar-menu-mobile-active':
+                layoutService.state.profileSidebarVisible
+        }">
+            <div style="margin-right: 700px;" *ngIf="getUser() === null;">
+                <p-chip label="¡Hola, Inicia Sesión!"></p-chip>
+            </div>
+            <button class="p-link" style="margin-right: 5px;" (click)="op.toggle($event)">
+                <i class="pi pi-shopping-cart" style="font-size: 24px; color: #727171;">
+                    <i *ngIf="numeroEnCarrito > 0" pBadge value="{{ numeroEnCarrito }}"></i>
+                </i>
+            </button>
+            <p-overlayPanel #op [style]="{ width: '450px' }" [showCloseIcon]="true">
+                <header style="text-align: center; text-transform: uppercase;" class="font-bold text-1xl">Carrito de
+                    compras
+                </header>
+                <hr class="mb-3 mx-3 border-top-1 border-none surface-border" />
+                <div *ngFor="let productosEnCarrito of productosEnCarrito">
+                    <div class="flex flex-wrap p-2 align-items-center gap-3">
+                        <div class="flex-1 flex flex-column gap-2">
+                            <span class="font-bold">{{ productosEnCarrito.nombre }}</span>
+                            <div class="flex align-items-center gap-2">
+                                <span>Categoria: {{productosEnCarrito.categoria }}</span>
+                            </div>
+                            <span>Precio Unitario: {{ 'S/. ' + productosEnCarrito.precio+ '.00' }}</span>
+                            <span>Cantidad: {{productosEnCarrito.cantidad}}</span>
+                        </div>
+                        <img [src]="productosEnCarrito.imagen" [alt]="productosEnCarrito.imagen"
+                            class="w-4rem shadow-2 flex-shrink-0 border-round" />
+                    </div>
+                    <hr class="mb-3 mx-3 border-top-1 border-none surface-border" />
+                </div>
+                <div class="flex-1 flex flex-column gap-2">
+                    <div style="text-align: end;" *ngIf="numeroEnCarrito > 0">
+                        <span>Total: {{ 'S/. '+obtenerPrecioTotalCarrito() + '.00'}}</span>
+                    </div>
+                </div>
+                <div style="text-align: end;" *ngIf="numeroEnCarrito > 0">
+                    <hr class="mb-3 mx-3 border-top-1 border-none surface-border" />
+                    <button pButton (click)="router.navigate(['/pago'])">Realizar Compra</button>
+                </div>
+
+                <span *ngIf="numeroEnCarrito == 0">No hay productos agregados</span>
+            </p-overlayPanel>
+            <button class="p-link layout-topbar-button" (click)="islogged()" style="margin-right: 5px;">
+                <i class="pi pi-user"></i>
+            </button>
+        </div>
+    </div>
+</body>
+<!-- Formulario de Login-->
+<p-dialog [(visible)]="loginDialog" [style]="{ width: '600px' }" [modal]="true" (onHide)="onCloseDialog()"
+    class="p-fluid" style="
+        background: linear-gradient(
+            180deg,
+            var(--primary-color) 10%,
+            rgba(33, 150, 243, 0) 30%
+        );
+    ">
+    <div style="border-radius: 80px; padding: 0.3rem">
+        <div class="w-full surface-card py-8 px-5 sm:px-8">
+            <div class="text-center mb-5">
+                <img src="https://res.cloudinary.com/dynsqtcbm/image/upload/v1705253508/idazwqhambmojap7gzac.png"
+                    alt="Image" height="50" class="mb-3" />
+                <div class="text-900 text-3xl font-medium mb-3">
+                    Iniciar Sesión
+                </div>
+            </div>
+            <form [formGroup]="loginForm">
+                <div>
+                    <label for="email1" class="block text-900 text-xl font-medium mb-2">Usuario</label>
+                    <div class="field p-fluid">
+                        <input id="usuarioLogin" formControlName="usuario" type="text" pInputText
+                            class="w-full md:w-30rem mb-5" style="padding: 1rem" type="username" class="" pInputText
+                            required [(ngModel)]="creds.usuario" [ngClass]="{
+                                'input-error': submitted && usernameForm.invalid
+                            }" />
+
+                        <small *ngIf="usernameForm.touched && usernameForm.invalid" class="mensaje-error"
+                            class="p-error">Usuario es requerido.</small>
+
+                        <label for="punto" style="color: white">.</label>
+
+                        <label for="password1" class="block text-900 font-medium text-xl mb-2">Contraseña</label>
+
+                        <input id="contraseñaLogin" formControlName="contrasena" type="password" pInputText
+                            class="w-full md:w-30rem mb-5" style="padding: 1rem" class="" pInputText
+                            [(ngModel)]="creds.contrasena" />
+                        <small id="username-help" class="p-error" *ngIf="
+                            loginForm
+                                .get('contrasena')
+                                .hasError('required') &&
+                            loginForm.get('contrasena').touched
+                        ">Contraseña es requerido.</small>
+
+
+                    </div>
+                    <label for="punto" style="color: white">.</label>
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="flex align-items-center">
+                            <p-checkbox id="rememberme1" [binary]="true" styleClass="mr-2"></p-checkbox>
+                            <label for="rememberme1">Recuerdame</label>
+                        </div>
+                        <p>
+                            <span class="create-account-link" style="color: white">Crear cuenta</span>
+                        </p>
+                        <a class="font-medium no-underline ml-2 text-right cursor-pointer"
+                            style="color: var(--primary-color)">Olvidaste tu contraseña?</a>
+                    </div>
+                    <div id="loginError" class="alert alert-danger" role="alert" hidden></div>
+                    <button pButton label="Ingresar" class="w-full p-3 text-xl" (click)="onSubmit()"></button>
+                    <div class="mb-5 gap-5 text-center">
+                        <p>
+                            <span class="create-account-link" style="color: white">Crear cuenta</span>
+                        </p>
+                        <p class="message">
+                            No estas registrado?
+                            <a href="#" (click)="openRegister()">Crear cuenta.</a>
+                        </p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- Menu de sidebar-->
+<p-sidebar [(visible)]="sidebarVisible" position="right">
+    <ng-template pTemplate="headless">
+        <div class="flex flex-column h-full">
+            <div class="">
+                <ul class="list-none p-3 m-0">
+                    <li>
+                        <ul class="list-none p-0 m-0 overflow-hidden">
+                            <li>
+                                <a pRipple
+                                    class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple">
+                                    <img src="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+                                        alt="User Avatar" class="avatar" />
+                                    <span class="username">{{ user }}</span>
+                                </a>
+                            </li>
+                            <hr class="mb-3 mx-3 border-top-1 border-none surface-border" />
+                            <li>
+                                <a pRipple
+                                    class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple">
+                                    <i class="pi pi-user mr-2"></i>
+                                    <span class="font-medium">Ver Perfil</span>
+                                </a>
+                            </li>
+                            <!--<li>
+                                <a pRipple
+                                [routerLink]="['/usuarioVenta']"
+                                    class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple">
+                                    <i class="pi pi-shopping-bag mr-2"></i>
+                                    <span class="font-medium">Mis Compras</span>
+                                </a>
+                            </li>-->
+                        </ul>
+                    </li>
+                </ul>
+                <hr class="mb-1 mx-1 border-top-1 border-none surface-border" />
+                <ul class="list-none p-3 m-0">
+                    <li>
+                        <ul class="list-none p-0 m-0 overflow-hidden">
+                            <li (click)="confirmPosition('center')">
+                                <a pRipple
+                                    class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple">
+                                    <i class="pi pi-fw pi-sign-out mr-2"></i>
+                                    <span class="font-medium">Cerrar Sesión</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </ng-template>
+</p-sidebar>
+
+<!-- Registro de usuario-->
+<p-dialog [(visible)]="registerDialog" [style]="{ width: '600px' }" [modal]="true" (onHide)="onCloseDialog()"
+    class="p-fluid" style="
+        background: linear-gradient(
+            180deg,
+            var(--primary-color) 10%,
+            rgba(33, 150, 243, 0) 30%
+        );
+    ">
+    <div class="text-center">
+        <div class="text-900 text-3xl font-medium mb-1">Crear cuenta</div>
+    </div>
+    <div style="border-radius: 80px; padding: 0.3rem">
+        <div class="w-full surface-card py-8 px-5 sm:px-8">
+            <form [formGroup]="usuarioForm">
+                <div>
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Nombre de usuario</label>
+                            <input id="usuario" formControlName="username" type="text" required pInputText />
+                            <small class="p-error"
+                                *ngIf="usuarioForm.get('username').hasError('required') &&usuarioForm.get('username').touched">
+                                Ingrese un nombre de usuario.</small>
+                        </div>
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Contraseña</label>
+                            <input id="password" formControlName="password" type="password" required pInputText />
+                            <small
+                                *ngIf="usuarioForm.get('password').hasError('required') &&usuarioForm.get('password').touched"
+                                class="p-error">
+                                Ingrese una contraseña.</small>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Nombre</label>
+                            <input id="nombre" formControlName="nombre" type="text" required pInputText />
+                            <small
+                                *ngIf="usuarioForm.get('nombre').hasError('required') &&usuarioForm.get('nombre').touched"
+                                class="p-error">Ingrese su nombre.</small>
+                        </div>
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Apellido</label>
+                            <input id="apellido" formControlName="apellido" type="text" required pInputText />
+                            <small
+                                *ngIf="usuarioForm.get('apellido').hasError('required') &&usuarioForm.get('apellido').touched"
+                                class="p-error">Ingrese su apellido.</small>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Correo</label>
+                            <input id="email" formControlName="email" type="text" required pInputText />
+                            <small
+                                *ngIf="usuarioForm.get('email').hasError('required') &&usuarioForm.get('email').touched"
+                                class="p-error">Ingrese su correo.</small>
+                        </div>
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Telefono</label>
+                            <input id="telefono" formControlName="telefono" type="text" required pInputText />
+                            <small
+                                *ngIf="usuarioForm.get('telefono').hasError('required') &&usuarioForm.get('telefono').touched"
+                                class="p-error">Ingrese su número de telefono.</small>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">DNI</label>
+                            <input id="dni" formControlName="dni" type="text" required pInputText />
+                            <small *ngIf="usuarioForm.get('dni').hasError('required') &&usuarioForm.get('dni').touched"
+                                class="p-error">Ingrese su número de DNI.</small>
+                        </div>
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Direccion</label>
+                            <input id="direccion" formControlName="direccion" type="text" required pInputText />
+                            <small
+                                *ngIf="usuarioForm.get('direccion').hasError('required') &&usuarioForm.get('direccion').touched"
+                                class="p-error">Ingrese su direccion.</small>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="field" style="width: 350px;" hidden>
+                            <label for="firstname">Perfil</label>
+                            <input id="perfil" formControlName="perfil" value="cliente" type="text" pInputText />
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="field">
+            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                (click)="onClose()"></button>
+            <button pButton pRipple label="Crear Cuenta" icon="pi pi-check" (click)="crearCuenta()"></button>
+        </div>
+    </ng-template>
+
+
+</p-dialog>
+<p-toast key="tst"></p-toast>
+<style>
+    body.sidebar-open {
+        overflow: hidden;
+        /* Evita que se haga scroll en el fondo */
+    }
+
+    body.sidebar-open main {
+        filter: blur(5px);
+        /* Ajusta el valor de blur según sea necesario */
+        transition: filter 0.3s ease;
+        /* Agrega una transición para suavizar el efecto */
+    }
+
+    .user-profile {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .p-sidebar {
+        background: rgb(33, 3, 63) !important;
+    }
+
+    .back-color {
+        background-color: #333;
+        color: #fff;
+    }
+
+    .avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .username {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .input-error {
+        border-color: red;
+        /* Cambia el color del borde cuando hay un error */
+    }
+</style>

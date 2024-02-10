@@ -1,0 +1,258 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Agregar usuario" icon="pi pi-plus" class="p-button-info mr-2" (click)="openRegister()"></button>
+                    </div>
+                </ng-template>
+
+                <!--<ng-template pTemplate="right">
+                    <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload>
+                    <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help" (click)="dt.exportCSV()"></button>
+                </ng-template>-->
+            </p-toolbar>
+
+            <p-table #dt [value]="usuario" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['username','usuario.username', 'nombre','usuario.nombre', 'apellido','usuario.apellido',  'dni','usuario.dni']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Mostrando {first} de {totalRecords}" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">MANTENIMIENTO DE USUARIOS</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."  class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+                        <th pSortableColumn="username">Usuario<p-sortIcon field="username"></p-sortIcon></th>
+                        <th pSortableColumn="nombre">Nombre <p-sortIcon field="nombre"></p-sortIcon></th>
+                        <th pSortableColumn="apellido">Apellido <p-sortIcon field="apellido"></p-sortIcon></th>
+                        <th pSortableColumn="correo">Correo<p-sortIcon field="correo"></p-sortIcon></th>
+                        <th pSortableColumn="telefono">Telefono <p-sortIcon field="telefono"></p-sortIcon></th>
+                        <th pSortableColumn="dni">DNI<p-sortIcon field="dni"></p-sortIcon></th>
+                        <th pSortableColumn="direccion">Direccion<p-sortIcon field="direccion"></p-sortIcon></th>
+                        <th pSortableColumn="perfil">Perfil<p-sortIcon field="perfil"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-usuario>
+                    <tr>
+                        <td style="width:10%; min-width:1rem;"><span class="p-column-title">ID</span>
+                            {{usuario.id}}
+                        </td>
+                        <td style="width:14%; min-width:8rem;">
+                            <span class="p-column-title">Usuario</span>
+                            {{usuario.username}}
+                        </td>
+                        <td style="width:14%; min-width:8rem;">
+                            <span class="p-column-title">Nombre</span>
+                            {{usuario.nombre}}
+                        </td>
+                        <td style="width:14%; min-width:8rem;">
+                            <span class="p-column-title">Apellido</span>
+                            {{usuario.apellido}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Correo</span>
+                            {{usuario.email}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Telefono</span>
+                            {{usuario.telefono}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">DNI</span>
+                            {{usuario.dni}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Dirección</span>
+                            {{usuario.direccion}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Perfil</span>
+                            {{usuario.perfil}}
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-info mr-2" (click)="loadUser(usuario.id)" (click)="openUpdate()"></button>
+                                <button id="botonEliminar" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="onDelete(usuario.id)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+<p-dialog [(visible)]="registerDialog" header="AGREGAR NUEVO USUARIO" [style]="{ width: '600px',  'margin-left': '-25%2' }" [modal]="true" (onHide)="onCloseDialog()"
+    class="p-fluid" style="
+        background: linear-gradient(
+            180deg,
+            var(--primary-color) 10%,
+            rgba(33, 150, 243, 0) 30%
+        );
+    ">
+    <div style="border-radius: 80px; padding: 0.3rem">
+        <div class="w-full surface-card py-8 px-5 sm:px-8">
+            <form [formGroup]="usuarioForm">
+                <div>
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Nombre de usuario</label>
+                            <input id="usuario" formControlName="username" type="text" required pInputText />
+                            <small class="p-error" *ngIf="usuarioForm.get('username').hasError('required') &&usuarioForm.get('username').touched">
+                                Ingrese un nombre de usuario.</small>
+                        </div>
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Contraseña</label>
+                            <input id="password" formControlName="password" type="password" required pInputText />
+                            <small *ngIf="usuarioForm.get('password').hasError('required') &&usuarioForm.get('password').touched" class="p-error">
+                                Ingrese una contraseña.</small>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Nombre</label>
+                            <input id="nombre" formControlName="nombre" type="text" required pInputText />
+                            <small *ngIf="usuarioForm.get('nombre').hasError('required') &&usuarioForm.get('nombre').touched" class="p-error" >Ingrese su nombre.</small>
+                        </div>
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Apellido</label>
+                            <input id="apellido" formControlName="apellido" type="text" required pInputText />
+                            <small *ngIf="usuarioForm.get('apellido').hasError('required') &&usuarioForm.get('apellido').touched" class="p-error">Ingrese su apellido.</small>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Correo</label>
+                            <input id="email" formControlName="email" type="text" required pInputText />
+                            <small *ngIf="usuarioForm.get('email').hasError('required') &&usuarioForm.get('email').touched" class="p-error">Ingrese su correo.</small>
+                        </div>
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Telefono</label>
+                            <input id="telefono" formControlName="telefono" type="text" required pInputText />
+                            <small *ngIf="usuarioForm.get('telefono').hasError('required') &&usuarioForm.get('telefono').touched" class="p-error">Ingrese su número de telefono.</small>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">DNI</label>
+                            <input id="dni" formControlName="dni" type="text" required pInputText />
+                            <small *ngIf="usuarioForm.get('dni').hasError('required') &&usuarioForm.get('dni').touched" class="p-error">Ingrese su número de DNI.</small>
+                        </div>
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Direccion</label>
+                            <input id="direccion" formControlName="direccion" type="text" required pInputText />
+                            <small *ngIf="usuarioForm.get('direccion').hasError('required') &&usuarioForm.get('direccion').touched" class="p-error">Ingrese su direccion.</small>
+                        </div>
+                    </div>    
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">perfil</label>
+                            <p-dropdown [options]="roles" [(ngModel)]="selectedRol" optionLabel="label" placeholder="Seleccionar rol" formControlName="perfil"></p-dropdown>
+                            <small *ngIf="usuarioForm.get('perfil').hasError('required') &&usuarioForm.get('perfil').touched" class="p-error">Asigne un rol al usuario.</small>
+                        </div>
+                    </div>                
+                </div>
+            </form>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="field">
+            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="onClose()"></button>
+            <button pButton pRipple label="Guardar" icon="pi pi-save" (click)="crear()" (click)="asignarRol()"></button>
+        </div>
+    </ng-template>
+    
+    
+</p-dialog>
+<p-dialog [(visible)]="updateDialog" header="ACTUALIZAR INFORMACIÓN DE USUARIO" [style]="{ width: '600px',  'margin-left': '-25%2' }" [modal]="true" (onHide)="onCloseDialog()"
+    class="p-fluid" style="
+        background: linear-gradient(
+            180deg,
+            var(--primary-color) 10%,
+            rgba(33, 150, 243, 0) 30%
+        );
+    ">
+    <div style="border-radius: 80px; padding: 0.3rem">
+        <div class="w-full surface-card py-8 px-5 sm:px-8">
+            <form [formGroup]="usuarioForm">
+                <div>
+                    <div class="field" style="width: 350px;" hidden>
+                        <label for="firstname">Nombre de usuario</label>
+                        <input id="usuario" formControlName="id" type="text" pInputText/>
+                    </div>
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Nombre de usuario</label>
+                            <input id="usuario" formControlName="username" type="text" required pInputText />
+                            <small class="p-error" *ngIf="usuarioForm.get('username').hasError('required') &&usuarioForm.get('username').touched">
+                                Ingrese un nombre de usuario.</small>
+                        </div>
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Contraseña</label>
+                            <input id="password" formControlName="password" type="password" required pInputText />
+                            <small *ngIf="usuarioForm.get('password').hasError('required') &&usuarioForm.get('password').touched" class="p-error">
+                                Ingrese una contraseña.</small>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Nombre</label>
+                            <input id="nombre" formControlName="nombre" type="text" required pInputText />
+                            <small *ngIf="usuarioForm.get('nombre').hasError('required') &&usuarioForm.get('nombre').touched" class="p-error" >Ingrese su nombre.</small>
+                        </div>
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Apellido</label>
+                            <input id="apellido" formControlName="apellido" type="text" required pInputText />
+                            <small *ngIf="usuarioForm.get('apellido').hasError('required') &&usuarioForm.get('apellido').touched" class="p-error">Ingrese su apellido.</small>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Correo</label>
+                            <input id="email" formControlName="email" type="email" required pInputText />
+                            <small *ngIf="usuarioForm.get('email').hasError('required') &&usuarioForm.get('email').touched" class="p-error">Ingrese su correo.</small>
+                        </div>
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Telefono</label>
+                            <input id="telefono" formControlName="telefono" type="text" required pInputText />
+                            <small *ngIf="usuarioForm.get('telefono').hasError('required') &&usuarioForm.get('telefono').touched" class="p-error">Ingrese su número de telefono.</small>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">DNI</label>
+                            <input id="dni" formControlName="dni" type="text" required pInputText />
+                            <small *ngIf="usuarioForm.get('dni').hasError('required') &&usuarioForm.get('dni').touched" class="p-error">Ingrese su número de DNI.</small>
+                        </div>
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">Direccion</label>
+                            <input id="direccion" formControlName="direccion" type="text" required pInputText />
+                            <small *ngIf="usuarioForm.get('direccion').hasError('required') &&usuarioForm.get('direccion').touched" class="p-error">Ingrese su direccion.</small>
+                        </div>
+                    </div>    
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="field" style="width: 350px;">
+                            <label for="firstname">perfil</label>
+                            <p-dropdown [options]="roles" [(ngModel)]="selectedRol" optionLabel="label" placeholder="Seleccionar rol" formControlName="perfil"></p-dropdown>
+                            <small *ngIf="usuarioForm.get('perfil').hasError('required') &&usuarioForm.get('perfil').touched" class="p-error">Asigne un rol al usuario.</small>
+                        </div>
+                    </div>                
+                </div>
+            </form>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="field">
+            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="onClose()"></button>
+            <button pButton pRipple label="Guardar" icon="pi pi-save" (click)="actualizar()" (click)="asignarRol()"></button>
+        </div>
+    </ng-template>
+    
+    
+</p-dialog>

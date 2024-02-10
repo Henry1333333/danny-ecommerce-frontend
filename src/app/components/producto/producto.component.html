@@ -1,0 +1,345 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Agregar producto" icon="pi pi-plus" class="p-button-info mr-2"
+                            (click)="openRegister()"></button>
+                    </div>
+                </ng-template>
+                <!--<ng-template pTemplate="right">
+                    <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import"
+                        chooseLabel="Import" class="mr-2 inline-block"
+                        url="https://api.cloudinary.com/v1_1/tu-nombre-de-cloudinary/upload" uploadHandler="basic"
+                        url="https://api.cloudinary.com/v1_1/dsbssqgki/image/upload"></p-fileUpload>
+                    <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"
+                        (click)="dt.exportCSV()"></button>
+                </ng-template>-->
+            </p-toolbar>
+
+            <p-table #dt [value]="productoList" responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="['nombre', 'productoList.nombre']" [paginator]="true"
+                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando {first} de {totalRecords}" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">MANTENIMIENTO DE PRODUCTOS</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."
+                                class="w-full sm:w-auto" />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="idproducto">
+                            ID <p-sortIcon field="id"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="codigo">
+                            Codigo<p-sortIcon field="codigo"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="nombre">
+                            Nombre<p-sortIcon field="nombre"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="categoria">
+                            Categoria<p-sortIcon field="categoria"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="descripcion">
+                            Descripción<p-sortIcon field="descripcion"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="precio">
+                            Precio<p-sortIcon field="precio"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="cantidad">
+                            Cantidad<p-sortIcon field="cantidad"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="imagen">
+                            Imagen<p-sortIcon field="imagen"></p-sortIcon>
+                        </th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-productoList>
+                    <tr>
+                        <td style="width: 10%; min-width: 6rem">
+                            <span class="p-column-title">ID</span>
+                            {{ productoList.idproducto }}
+                        </td>
+                        <td style="width: 14%; min-width: 8rem">
+                            <span class="p-column-title">Codigo</span>
+                            {{ productoList.codigo }}
+                        </td>
+                        <td style="width: 14%; min-width: 8rem">
+                            <span class="p-column-title">Nombre</span>
+                            {{ productoList.nombre }}
+                        </td>
+                        <td style="width: 14%; min-width: 8rem">
+                            <span class="p-column-title">Categoria</span>
+                            {{ productoList.categoria }}
+                        </td>
+                        <td style="width: 14%; min-width: 30rem">
+                            <span class="p-column-title">Descripción</span>
+                            {{ productoList.descripcion }}
+                        </td>
+                        <td style="width: 14%; min-width: 7rem">
+                            <span class="p-column-title">Precio</span>S/.
+                            {{ productoList.precio }}.00
+                        </td>
+                        <td style="width: 14%; min-width: 9rem">
+                            <span class="p-column-title">Cantidad</span>
+                            {{ productoList.cantidad }}
+                        </td>
+                        <td style="width: 14%; min-width: 10rem">
+                            <span class="p-column-title">Imagen</span>
+                            <img [src]="productoList.imagen" [alt]="productoList.imagen" width="100" class="shadow-4" />
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-info mr-2"
+                                    (click)="loadUser(productoList.idproducto)" (click)="openUpdate()"></button>
+                                <button id="botonEliminar" pButton pRipple icon="pi pi-trash"
+                                    class="p-button-rounded p-button-danger"
+                                    (click)="onDelete(productoList.idproducto)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+<p-dialog [(visible)]="registerDialog" header="AGREGAR NUEVO PRODUCTO"
+    [style]="{ width: '600px', 'margin-left': '-25%2' }" [modal]="true" (onHide)="onCloseDialog()" class="p-fluid"
+    style="
+        background: linear-gradient(
+            180deg,
+            var(--primary-color) 10%,
+            rgba(33, 150, 243, 0) 30%
+        );
+    ">
+    <div style="border-radius: 80px; padding: 0.3rem">
+        <div class="w-full surface-card py-8 px-5 sm:px-8">
+            <form [formGroup]="productoForm">
+                <div>
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="field" style="width: 350px">
+                            <label for="firstname">Codigo</label>
+                            <p-inputNumber id="password" formControlName="codigo" type="text" required />
+                            <small *ngIf="
+                                    productoForm
+                                        .get('codigo')
+                                        .hasError('required') &&
+                                    productoForm.get('codigo').touched
+                                " class="p-error">
+                                Ingrese el codigo de producto.</small>
+                        </div>
+                        <div class="field" style="width: 350px">
+                            <label for="firstname">Nombre</label>
+                            <input id="usuario" formControlName="nombre" type="text" required pInputText />
+                            <small class="p-error" *ngIf="
+                                    productoForm
+                                        .get('nombre')
+                                        .hasError('required') &&
+                                    productoForm.get('nombre').touched
+                                ">
+                                Ingrese un nombre de producto.</small>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="field" style="width: 350px">
+                            <label for="firstname">Precio</label>
+                            <p-inputNumber id="apellido" formControlName="precio" type="text" mode="currency"
+                                currency="PEN" locale="es-PE" required />
+                            <small *ngIf="
+                                    productoForm
+                                        .get('precio')
+                                        .hasError('required') &&
+                                    productoForm.get('precio').touched
+                                " class="p-error">Ingrese el precio.</small>
+                        </div>
+                        <div class="field" style="width: 350px">
+                            <label for="firstname">Cantidad</label>
+                            <p-inputNumber id="email" formControlName="cantidad" type="text" required />
+                            <small *ngIf="
+                                    productoForm
+                                        .get('cantidad')
+                                        .hasError('required') &&
+                                    productoForm.get('cantidad').touched
+                                " class="p-error">Ingrese la cantidad.</small>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="field" style="width: 350px">
+                            <label for="firstname">Categoria</label>
+                            <p-dropdown [options]="categorias" [(ngModel)]="selectedCategoria" optionLabel="label"
+                                placeholder="Seleccionar categoria" formControlName="idcategoria"></p-dropdown>
+                            <small *ngIf="
+                                    productoForm
+                                        .get('idcategoria')
+                                        .hasError('required') &&
+                                    productoForm.get('idcategoria').touched
+                                " class="p-error">Seleccione una categoria.</small>
+                        </div>
+                        <div class="field" style="width: 350px">
+                            <label for="firstname">Descripción</label>
+                            <input rows="5" cols="30" formControlName="descripcion" pInputText>
+                            <small *ngIf="
+                                    productoForm
+                                        .get('descripcion')
+                                        .hasError('required') &&
+                                    productoForm.get('descripcion').touched
+                                " class="p-error">
+                                Ingrese una descripcion.</small>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="field" style="width: 350px">
+                            <label for="firstname">Imagen</label>
+                            <div class="custom-file-upload">
+                                <p-fileUpload chooseLabel="Subir Imagen" name="multipartFile" chooseIcon="pi pi-upload" [customUpload]="true"
+                                    (onSelect)="onFileSelect($event)" [auto]="true" accept="image/*"
+                                    mode="advanced"></p-fileUpload>
+                            </div>
+                        </div>
+                        <div class="field" style="width: 350px" hidden>
+                            <label for="firstname">Nombre de usuario</label>
+                            <input id="estado" formControlName="estado" type="text" [(ngModel)]="booleano" pInputText />
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="field">
+            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                (click)="onClose()"></button>
+            <button pButton pRipple label="Guardar" icon="pi pi-save" (click)="onUpload()"></button>
+        </div>
+    </ng-template>
+</p-dialog>
+<p-dialog [(visible)]="updateDialog" header="ACTUALIZAR INFORMACIÓN DE PRODUCTO"
+    [style]="{ width: '600px', 'margin-left': '-25%2' }" [modal]="true" (onHide)="onCloseDialog()" class="p-fluid"
+    style="
+        background: linear-gradient(
+            180deg,
+            var(--primary-color) 10%,
+            rgba(33, 150, 243, 0) 30%
+        );
+    ">
+    <div style="border-radius: 80px; padding: 0.3rem">
+        <div class="w-full surface-card py-8 px-5 sm:px-8">
+            <form [formGroup]="productoForm">
+                <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                    <div class="field" style="width: 350px" hidden>
+                        <label for="firstname">Nombre de usuario</label>
+                        <input id="idproducto" formControlName="idproducto" type="text" pInputText />
+                    </div>
+                    <div class="field" style="width: 350px">
+                        <label for="firstname">Codigo</label>
+                        <p-inputNumber id="password" formControlName="codigo" type="text" required />
+                        <small *ngIf="
+                                productoForm
+                                    .get('codigo')
+                                    .hasError('required') &&
+                                productoForm.get('codigo').touched
+                            " class="p-error">
+                            Ingrese el codigo de producto.</small>
+                    </div>
+                    <div class="field" style="width: 350px">
+                        <label for="firstname">Nombre</label>
+                        <input id="usuario" formControlName="nombre" type="text" required pInputText />
+                        <small class="p-error" *ngIf="
+                                productoForm
+                                    .get('nombre')
+                                    .hasError('required') &&
+                                productoForm.get('nombre').touched
+                            ">
+                            Ingrese un nombre de producto.</small>
+                    </div>
+                </div>
+                <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                    <div class="field" style="width: 350px">
+                        <label for="firstname">Precio</label>
+                        <p-inputNumber id="apellido" formControlName="precio" type="text" mode="currency" currency="PEN"
+                            locale="es-PE" required />
+                        <small *ngIf="
+                                productoForm
+                                    .get('precio')
+                                    .hasError('required') &&
+                                productoForm.get('precio').touched
+                            " class="p-error">Ingrese el precio.</small>
+                    </div>
+                    <div class="field" style="width: 350px">
+                        <label for="firstname">Cantidad</label>
+                        <p-inputNumber id="email" formControlName="cantidad" type="text" required />
+                        <small *ngIf="
+                                productoForm
+                                    .get('cantidad')
+                                    .hasError('required') &&
+                                productoForm.get('cantidad').touched
+                            " class="p-error">Ingrese la cantidad.</small>
+                    </div>
+                </div>
+                <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                    <div class="field" style="width: 350px">
+                        <label for="firstname">Categoria</label>
+                        <p-dropdown [options]="categorias" [(ngModel)]="selectedCategoria" optionLabel="label"
+                            placeholder="Seleccionar categoria" formControlName="idcategoria"></p-dropdown>
+                        <small *ngIf="
+                                productoForm
+                                    .get('idcategoria')
+                                    .hasError('required') &&
+                                productoForm.get('idcategoria').touched
+                            " class="p-error">Seleccione una categoria.</small>
+                    </div>
+                    <div class="field" style="width: 350px">
+                        <label for="firstname">Imagen</label>
+                        <input id="telefono" formControlName="imagen" type="text" required pInputText />
+                        <small *ngIf="
+                                productoForm
+                                    .get('imagen')
+                                    .hasError('required') &&
+                                productoForm.get('imagen').touched
+                            " class="p-error">Suba una imagen.</small>
+                    </div>
+                </div>
+                <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                    <div class="field" style="width: 350px">
+                        <label for="firstname">Descripción</label>
+                        <textarea rows="5" cols="30" pInputTextarea formControlName="descripcion"></textarea>
+                        <small *ngIf="
+                                productoForm
+                                    .get('descripcion')
+                                    .hasError('required') &&
+                                productoForm.get('descripcion').touched
+                            " class="p-error">
+                            Ingrese una descripcion.</small>
+                    </div>
+                    <div class="field" style="width: 350px" hidden>
+                        <label for="firstname">Nombre de usuario</label>
+                        <input id="estado" formControlName="estado" type="text" [(ngModel)]="booleano" pInputText />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="field">
+            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                (click)="onClose()"></button>
+            <button pButton pRipple label="Guardar" icon="pi pi-save" (click)="actualizar()"
+                (click)="asignarRol()"></button>
+        </div>
+    </ng-template>
+</p-dialog>
+<style>
+    .custom-file-upload .ui-fileupload-choose,
+    .custom-file-upload .ui-fileupload-upload,
+    .custom-file-upload .ui-fileupload-cancel {
+        display: none !important;
+    }
+</style>

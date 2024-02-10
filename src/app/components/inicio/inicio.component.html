@@ -1,0 +1,324 @@
+<div class="card">
+    <div class="cater3-movingBG">
+
+        <div class="flyinTxtCont">
+            <div class="overlay"></div>
+            <div class="flyIn lineOne">Bienvenido</div>
+            <div class="flyIn lineTwo">a nuestra </div>
+            <div class="flyIn lineThree">tienda en linea</div>
+            <div class="flyIn lineFour">Descubre productos increíbles y encuentra las mejores ofertas. ¡Esperamos que
+                tengas una experiencia de compra extraordinaria!</div>
+        </div>
+        <div class="align-items-center">
+            <button pButton pRipple (click)="router.navigate(['/product-list'])" type="button" id="hov"
+                label="Empezar a Comprar"
+                class="p-button-rounded text-xl border-none mt-3 bg-orange-500 font-normal line-height-3 px-3 text-white"></button>
+        </div>
+    </div>
+    <div class="image-container " hidden>
+        <img src="https://res.cloudinary.com/dynsqtcbm/image/upload/v1705874425/o1rthfel4uz3ea5fxmkz.avif" alt=""
+            class="background-image">
+        <div class="overlay"></div>
+        <div class="text-container">
+            <div class="centered-galleria">
+                <p-galleria [(value)]="images" [numVisible]="5" [circular]="true" [showItemNavigators]="true"
+                    [showThumbnails]="false" [responsiveOptions]="responsiveOptions"
+                    [containerStyle]="{ 'max-width': '640px' }">
+                    <ng-template pTemplate="item" let-item>
+                        <img [src]="item.itemImageSrc" style="width: 300%; display: block;" />
+                    </ng-template>
+                </p-galleria>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="comprobante" hidden>
+    <div class="header">
+        <img class="logo"
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Angular_full_color_logo.svg/2048px-Angular_full_color_logo.svg.png"
+            alt="amyelsner" width="100">
+        <h2>Comprobante de Compra</h2>
+    </div>
+    <div id="info">
+        <p>Dirección de la Tienda</p>
+        <p>Teléfono: 123-456-789</p>
+        <p>Fecha: 23/01/2024</p>
+    </div>
+
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Producto 1</td>
+                <td>2</td>
+                <td>$20.00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div id="total">
+        <p>Total: $35.00</p>
+    </div>
+
+    <div id="footer">
+        <p>¡Gracias por tu compra!</p>
+    </div>
+</div>
+<style>
+    #hov:hover {
+        background-color: #ffddb3;
+        /* Cambia esto al color deseado */
+    }
+
+    .align-items-center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #hov {
+        margin-bottom: 50px;
+
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        /* Ajusta la opacidad (último valor) según sea necesario */
+    }
+
+    .card {
+        position: relative;
+    }
+
+    .image-container {
+        position: relative;
+    }
+
+    .background-image {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        filter: blur(2px);
+    }
+
+    .text-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: white;
+    }
+
+    .centered-galleria {
+        max-width: 640px;
+        margin: 0 auto;
+    }
+
+    .welcome-message {
+        padding: 20px;
+        text-align: center;
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+    }
+
+    .cater3-movingBG {
+        height: 100%;
+        background-image: url(https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
+        background-size: 125%;
+        background-repeat: repeat-x;
+        animation: animatedBackground 15s linear alternate infinite;
+
+    }
+
+    @keyframes animatedBackground {
+        0% {
+            background-position: 0 0;
+        }
+
+        50% {
+            background-position: 50% 0;
+        }
+
+        100% {
+            background-position: 0 0;
+        }
+    }
+
+    .flyinTxtCont {
+        height: 100%;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start;
+        -webkit-box-pack: end;
+        -ms-flex-pack: end;
+        justify-content: flex-end;
+        padding-bottom: 6%;
+        margin-left: 2em;
+    }
+
+    .flyIn {
+        color: #fff;
+        font-family: 'Raleway';
+        text-transform: uppercase;
+        line-height: 1.2em;
+        position: relative;
+        text-shadow: 2px 2px 40px rgba(0, 0, 0, 0.7);
+    }
+
+    .lineOne {
+        transition-delay: .2s;
+        transition: .4s ease in;
+        animation: txtFlyIn .3s linear;
+    }
+
+    .lineTwo {
+        transition-delay: .4s;
+        transition: .6s ease in;
+        animation: txtFlyIn .6s linear;
+    }
+
+
+    .lineThree {
+        transition-delay: .6s;
+        transition: .8s ease in;
+        animation: txtFlyIn .9s linear;
+    }
+
+    .lineOne,
+    .lineTwo,
+    .lineThree {
+        font-size: 110px;
+        font-weight: bold;
+        letter-spacing: 3px;
+    }
+
+    .lineFour {
+        transition-delay: 2s;
+        transition: 2s ease in;
+        animation: fadeIn 2s linear;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        display: inline-block;
+        color: #000;
+        box-size: border-box;
+        max-width: 63%;
+        max-width: 22em;
+        font-size: 32px;
+        padding: .2em .5em;
+        margin-top: 10px;
+    }
+
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @keyframes txtFlyIn {
+        0% {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(0%);
+        }
+    }
+</style>
+<style>
+    #info {
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    #items {
+        margin-top: 20px;
+    }
+
+    .item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+    }
+
+    .item span {
+        flex: 1;
+    }
+
+    #total {
+        margin-top: 20px;
+        text-align: right;
+    }
+
+    #footer {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .comprobante {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        font-family: Arial, sans-serif;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .logo {
+        max-width: 100px;
+        margin-bottom: 10px;
+    }
+
+    .info-cliente {
+        margin-bottom: 20px;
+    }
+
+    .items-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .items-table th,
+    .items-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .total {
+        margin-top: 20px;
+        text-align: right;
+    }
+</style>

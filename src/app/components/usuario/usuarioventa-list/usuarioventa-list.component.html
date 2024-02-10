@@ -1,0 +1,74 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+
+            <p-table #dt [value]="usuarioVenta"  scrollHeight="550px" [tableStyle]="{'min-width': '50rem'}"responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="['producto', 'usuarioVenta.producto']" [paginator]="true"
+                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando {first} de {totalRecords}" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">PRODUCTOS COMPRADOS</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."
+                                class="w-full sm:w-auto" />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="producto">
+                            Producto<p-sortIcon field="producto"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="cantidad">
+                            Cantidad<p-sortIcon field="cantidad"></p-sortIcon>
+                        </th>
+                        
+                        <th pSortableColumn="precioUnitario">
+                            Precio Unitario<p-sortIcon field="precioUnitario"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="precioTotal">
+                            Precio Total<p-sortIcon field="precioTotal"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="fechaVenta">
+                            Fecha de Compra<p-sortIcon field="fechaVenta"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="imagen">
+                            Imagen<p-sortIcon field="imagen"></p-sortIcon>
+                        </th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-usuarioVenta>
+                    <tr>
+                        <td style="width: 14%; min-width: 8rem">
+                            <span class="p-column-title">Producto</span>
+                            {{ usuarioVenta.producto }}
+                        </td>
+                        <td style="width: 14%; min-width: 7rem">
+                            <span class="p-column-title">Cantidad</span>
+                            {{ usuarioVenta.cantidad }}
+                        </td>
+                        <td style="width: 14%; min-width: 8rem">
+                            <span class="p-column-title">Precio Unitario</span>
+                            S/. {{ usuarioVenta.precioUnitario }}.00
+                        </td>
+                        <td style="width: 14%; min-width: 8rem">
+                            <span class="p-column-title">Precio Total</span>
+                            S/. {{ usuarioVenta.precioTotal }}.00
+                        </td>
+                        <td style="width: 10%; min-width: 15rem">
+                            <span class="p-column-title">Fecha de Compra</span>
+                            {{ usuarioVenta.fechaVenta | date:'yyyy-MM-dd HH:mm' }}
+                        </td>
+                        <td style="width: 14%; min-width: 10rem">
+                            <span class="p-column-title">Imagen</span>
+                            <img [src]="usuarioVenta.imagen" [alt]="usuarioVenta.imagen" width="100" class="shadow-4" />
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
